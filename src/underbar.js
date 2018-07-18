@@ -38,7 +38,11 @@
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
-    return n === undefined ? array[array.length - 1] : n > array.length ? array.slice(0) : array.slice(array.length - n);
+    return n === undefined
+      ? array[array.length - 1]
+      : n > array.length
+        ? array.slice(0)
+        : array.slice(array.length - n);
   };
 
   // Call iterator(value, key, collection) for each element of collection.
@@ -47,12 +51,12 @@
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
-    if (Array.isArray(collection) === true) {
-      for (var i = 0; i < collection.length; i++) {
+    if (Array.isArray(collection)) {
+      for (let i = 0; i < collection.length; i++) {
         iterator(collection[i], i, collection);
       }
     } else {
-      for (var key in collection) {
+      for (let key in collection) {
         iterator(collection[key], key, collection);
       }
     }
@@ -64,7 +68,7 @@
     // TIP: Here's an example of a function that needs to iterate, which we've
     // implemented for you. Instead of using a standard `for` loop, though,
     // it uses the iteration helper `each`, which you will need to write.
-    var result = -1;
+    let result = -1;
 
     _.each(array, function(item, index) {
       if (item === target && result === -1) {
@@ -76,9 +80,9 @@
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
-    var results = [];
-    _.each(collection, function(elm, index) {
-      if (test(elm, index)) {
+    let results = [];
+    _.each(collection, function(elm) {
+      if (test(elm)) {
         results.push(elm);
       }
     });
@@ -89,9 +93,9 @@
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
-    var results = [];
-    _.each(collection, function(elm, index) {
-      if (!test(elm, index)) {
+    let results = [];
+    _.each(collection, function(elm) {
+      if (!test(elm)) {
         results.push(elm);
       }
     });
@@ -100,15 +104,14 @@
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array) {
-    var results = [];
+    let results = [];
     for (var i = 0; i < array.length; i++) {
       if (!results.includes(array[i])) {
         results.push(array[i]);
       }
     }
     return results;
-  }
-
+  };
 
   // Return the results of applying an iterator to each element.
   _.map = function(collection, iterator) {
@@ -116,7 +119,7 @@
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
     var results = [];
-    if (Array.isArray(collection) === true) {
+    if (Array.isArray(collection)) {
       for (var i = 0; i < collection.length; i++) {
         results.push(iterator(collection[i]));
       }
@@ -163,12 +166,15 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
-    var accUndefined = arguments.length < 3; // <-- was missing exit for accumulator undefined cases
+    let accUndefined = arguments.length < 3; // <-- was missing exit for accumulator undefined cases
     _.each(collection, function(elem) {
-      if (accUndefined) { //Ensures the undefined case is only evaluated once per collection
+      if (accUndefined) {
+        //Ensures the undefined case is only evaluated once per collection
         accUndefined = false;
         accumulator = elem;
-      } else accumulator = iterator(accumulator, elem);
+      } else {
+        accumulator = iterator(accumulator, elem);
+      }
     });
     return accumulator;
   };
@@ -176,22 +182,29 @@
   _.contains = function(collection, target) {
     // TIP: Many iteration problems can be most easily expressed in
     // terms of reduce(). Here's a freebie to demonstrate!
-    return _.reduce(collection, function(wasFound, item) {
-      if (wasFound) {
-        return true;
-      }
-      return item === target;
-    }, false);
+    return _.reduce(
+      collection,
+      function(wasFound, item) {
+        if (wasFound) {
+          return true;
+        }
+        return item === target;
+      },
+      false
+    );
   };
-
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, test) {
     // TIP: Try re-using reduce() here.
     test = test || _.identity;
-    return !!_.reduce(collection, function(all, item) {
-      return all && test(item);
-    }, true);
+    return !!_.reduce(
+      collection,
+      function(all, item) {
+        return all && test(item);
+      },
+      true
+    );
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
@@ -199,11 +212,14 @@
   _.some = function(collection, test) {
     // TIP: There's a very clever way to re-use every() here.
     test = test || _.identity;
-    return !!_.reduce(collection, function(all, item) {
-      return all || test(item);
-    }, false);
+    return !!_.reduce(
+      collection,
+      function(all, item) {
+        return all || test(item);
+      },
+      false
+    );
   };
-
 
   /**
    * OBJECTS
@@ -227,7 +243,7 @@
     _.each(arguments, function(otherObj) {
       _.each(otherObj, function(value, key) {
         obj[key] = value;
-      })
+      });
     });
     return obj;
   };
@@ -239,8 +255,8 @@
       _.each(otherObj, function(value, key) {
         if (obj[key] === undefined) {
           obj[key] = value;
-        };
-      })
+        }
+      });
     });
     return obj;
   };
@@ -307,7 +323,6 @@
     }, wait);
   };
 
-
   /**
    * ADVANCED COLLECTION OPERATIONS
    * ==============================
@@ -326,13 +341,11 @@
     var copyArray = Array.from(array);
     var random = Math.floor(Math.random() * copyArray.length);
     for (var i = 0; i < array.length; i++) {
-
       result.push(copyArray[random]);
       copyArray.splice(random, 1);
     }
     return result;
   };
-
 
   /**
    * ADVANCED
@@ -379,4 +392,4 @@
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {};
-}());
+})();
