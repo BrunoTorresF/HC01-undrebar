@@ -41,8 +41,8 @@
     return n === undefined
       ? array[array.length - 1]
       : n > array.length
-        ? array.slice(0)
-        : array.slice(array.length - n);
+      ? array.slice(0)
+      : array.slice(array.length - n);
   };
 
   // Call iterator(value, key, collection) for each element of collection.
@@ -300,15 +300,18 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
-    var result;
-    var args = Array.from(arguments);
-
-    return function() {
-      if (!args.includes(result)) {
-        result = func(...arguments);
+    var cache = {};
+    var memo = function(...args) {
+      var key = args.toString();
+      if (key in cache) {
+        return cache[key];
       }
+
+      let result = func.apply(this, args);
+      cache[key] = result;
       return result;
     };
+    return memo;
   };
   // Delays a function for the given number of milliseconds, and then calls
   // it with the arguments supplied.
