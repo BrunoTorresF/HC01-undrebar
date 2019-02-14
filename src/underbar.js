@@ -299,7 +299,7 @@
   // _.memoize should return a function that, when called, will check if it has
   // already computed the result for the given argument and return that value
   // instead if possible.
-  _.memoize = _.memoize = function(func) {
+  _.memoize = function(func) {
     var cache = {};
     var memo = function() {
       var args = [...arguments];
