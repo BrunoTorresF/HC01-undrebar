@@ -299,20 +299,22 @@
   // _.memoize should return a function that, when called, will check if it has
   // already computed the result for the given argument and return that value
   // instead if possible.
-  _.memoize = function(func) {
+  _.memoize = _.memoize = function(func) {
     var cache = {};
-    var memo = function(...args) {
-      var key = args.toString();
-      if (key in cache) {
+    var memo = function() {
+      var args = [...arguments];
+      var key = JSON.stringify(args);
+      if (cache[key] === undefined) {
+        var result = func.apply(null, args);
+        cache[key] = result;
+        return result;
+      } else {
         return cache[key];
       }
-
-      let result = func.apply(this, args);
-      cache[key] = result;
-      return result;
     };
     return memo;
   };
+
   // Delays a function for the given number of milliseconds, and then calls
   // it with the arguments supplied.
   //
