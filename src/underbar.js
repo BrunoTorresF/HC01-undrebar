@@ -70,7 +70,7 @@
     // it uses the iteration helper `each`, which you will need to write.
     let result = -1;
 
-    _.each(array, function(item, index) {
+    _.each(array, (item, index) => {
       if (item === target && result === -1) {
         result = index;
       }
@@ -81,7 +81,7 @@
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
     let results = [];
-    _.each(collection, function(elm) {
+    _.each(collection, elm => {
       if (test(elm)) {
         results.push(elm);
       }
@@ -94,7 +94,7 @@
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
     let results = [];
-    _.each(collection, function(elm) {
+    _.each(collection, elm => {
       if (!test(elm)) {
         results.push(elm);
       }
@@ -104,13 +104,15 @@
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array) {
-    let results = [];
-    for (var i = 0; i < array.length; i++) {
-      if (!results.includes(array[i])) {
-        results.push(array[i]);
-      }
-    }
-    return results;
+    const unique = new Set(array);
+    return [...unique];
+    // let results = [];
+    // for (var i = 0; i < array.length; i++) {
+    //   if (!results.includes(array[i])) {
+    //     results.push(array[i]);
+    //   }
+    // }
+    // return results;
   };
 
   // Return the results of applying an iterator to each element.
@@ -118,9 +120,9 @@
     // map() is a useful primitive iteration function that works a lot
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
-    var results = [];
+    const results = [];
     if (Array.isArray(collection)) {
-      for (var i = 0; i < collection.length; i++) {
+      for (let i = 0; i < collection.length; i++) {
         results.push(iterator(collection[i]));
       }
     }
@@ -167,7 +169,7 @@
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
     let accUndefined = arguments.length < 3; // <-- was missing exit for accumulator undefined cases
-    _.each(collection, function(elem) {
+    _.each(collection, elem => {
       if (accUndefined) {
         //Ensures the undefined case is only evaluated once per collection
         accUndefined = false;
@@ -184,7 +186,7 @@
     // terms of reduce(). Here's a freebie to demonstrate!
     return _.reduce(
       collection,
-      function(wasFound, item) {
+      (wasFound, item) => {
         if (wasFound) {
           return true;
         }
@@ -200,7 +202,7 @@
     test = test || _.identity;
     return !!_.reduce(
       collection,
-      function(all, item) {
+      (all, item) => {
         return all && test(item);
       },
       true
@@ -214,7 +216,7 @@
     test = test || _.identity;
     return !!_.reduce(
       collection,
-      function(all, item) {
+      (all, item) => {
         return all || test(item);
       },
       false
@@ -240,8 +242,8 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
-    _.each(arguments, function(otherObj) {
-      _.each(otherObj, function(value, key) {
+    _.each(arguments, otherObj => {
+      _.each(otherObj, (value, key) => {
         obj[key] = value;
       });
     });
@@ -251,8 +253,8 @@
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
-    _.each(arguments, function(otherObj) {
-      _.each(otherObj, function(value, key) {
+    _.each(arguments, otherObj => {
+      _.each(otherObj, (value, key) => {
         if (obj[key] === undefined) {
           obj[key] = value;
         }
@@ -274,8 +276,8 @@
     // TIP: These variables are stored in a "closure scope" (worth researching),
     // so that they'll remain available to the newly-generated function every
     // time it's called.
-    var alreadyCalled = false;
-    var result;
+    let alreadyCalled = false;
+    let result;
 
     // TIP: We'll return a new function that delegates to the old one, but only
     // if it hasn't been called before.
@@ -300,12 +302,12 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
-    var cache = {};
-    var memo = function() {
-      var args = [...arguments];
-      var key = JSON.stringify(args);
+    const cache = {};
+    const memo = function() {
+      const args = [...arguments];
+      const key = JSON.stringify(args);
       if (cache[key] === undefined) {
-        var result = func.apply(null, args);
+        let result = func.apply(null, args);
         cache[key] = result;
         return result;
       } else {
@@ -322,7 +324,7 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
-    var args = Array.prototype.slice.call(arguments, 2);
+    const args = Array.prototype.slice.call(arguments, 2);
     setTimeout(function() {
       func(...args);
     }, wait);
@@ -342,12 +344,12 @@
 
   */
   _.shuffle = function(array) {
-    var result = [];
-    var copyArray = Array.from(array);
-    var random = Math.floor(Math.random() * copyArray.length);
-    for (var i = 0; i < array.length; i++) {
-      result.push(copyArray[random]);
-      copyArray.splice(random, 1);
+    const result = [];
+    const arrayCopy = array.slice();
+    for (let i = 0; i < array.length; i++) {
+      let random = Math.floor(Math.random() * arrayCopy.length);
+      result.push(arrayCopy[random]);
+      arrayCopy.splice(random, 1);
     }
     return result;
   };
@@ -363,7 +365,7 @@
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
-    return _.map(collection, function(value) {
+    return _.map(collection, value => {
       return typeof functionOrKey === 'string'
         ? value[functionOrKey].apply(value, args)
         : functionOrKey.apply(value, args);
